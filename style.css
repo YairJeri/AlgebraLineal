@@ -1,0 +1,147 @@
+/* Estilo general de la página */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
+}
+
+header {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+}
+
+#matrix-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding-top: 20px;
+  gap: 20px;
+}
+
+#matrix-generated {
+  display: flex;
+  justify-content: center;
+}
+
+/* Contenedor de selección */
+.selection-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Input de número */
+input[type="number"] {
+  width: 200px;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+  text-align: center;
+}
+
+/* Cuando el input está enfocado */
+input[type="number"]:focus {
+  border-color: #4caf50; /* Borde verde cuando está enfocado */
+  outline: none;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5); /* Sombra verde */
+}
+
+/* Cuando el input es inválido (fuera del rango de 4-10) */
+input[type="number"]:invalid {
+  border-color: red; /* Borde rojo cuando el input es inválido */
+  background-color: #ffdddd; /* Fondo ligeramente rojo para mayor claridad */
+}
+
+/* Cuando el input es válido */
+input[type="number"]:valid {
+  border-color: #4caf50; /* Borde verde si el valor es válido */
+}
+
+#generate-button {
+  padding: 10px 20px;
+  width: 200px;
+  margin: 20px auto;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.generate-button:hover {
+  background-color: #3e8e41;
+}
+
+.generate-button:active {
+  background-color: #3eee41;
+}
+/* Estilo para las matrices */
+.matrix-container {
+  background-color: white;
+  border: 2px solid #ddd;
+  padding: 0px 20px 20px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+h2 {
+  text-align: center;
+}
+
+/* Estilo para la tabla de matrices */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+  border-width: 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+th,
+td {
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  padding: 0;
+}
+
+th,
+td {
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* Agregar colores a las celdas */
+td {
+  background-color: #f9f9f9;
+}
+
+td:hover {
+  background-color: #f0f0f0;
+}
+
+td input {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  text-align: center;
+  padding: 0;
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matemáticas con Matrices</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Operaciones con Matrices</h1>
+  </header>
+  
+  <section class="selection-container">
+    <h2>Ingrese el valor de n:</h2>
+    <input type="number" id="n" placeholder="Ingrese el valor de n" min="4" max="10" required>
+    <div id="generate-button">Generar</div>
+  </section>
+  <section id="matrix-generated">
+    <div class="matrix-container">
+      <h2>Matriz generada</h2>
+      <table id="matrix-gen"></table>
+    </div>
+  </section>
+  <section id="matrix-section">
+    <div class="matrix-container">
+      <h2>Matrix P</h2>
+      <table id="matrixP"></table>
+    </div>
+    <div class="matrix-container">
+      <h2>Matrix L</h2>
+      <table id="matrixL"></table>
+    </div>
+    <div class="matrix-container">
+      <h2>Matrix U</h2>
+      <table id="matrixU"></table>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Matrices Project</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
