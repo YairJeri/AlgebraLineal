@@ -1,26 +1,92 @@
-/* Estilo general de la página */
+/* Estilo general - Dark Theme */
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f9;
-  color: #333;
+  background-color: #121212;
+  color: #e0e0e0;
 }
 
+/* Header con diseño moderno */
 header {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 0;
+  background: linear-gradient(135deg, #1f1f1f, #2b2b2b);
+  color: #00d4ff;
+  padding: 20px 20px;
   text-align: center;
+  border-bottom: 2px solid #00d4ff;
+  box-shadow: 0 2px 10px rgba(0, 212, 255, 0.2);
 }
 
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  text-wrap: pretty;
+}
+
+/* Footer */
 footer {
   text-align: center;
   padding: 10px;
-  background-color: #4caf50;
-  color: white;
+  background-color: #1f1f1f;
+  color: #aaa;
 }
 
+/* Sección de selección */
+.selection-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+input[type="number"] {
+  width: 200px;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #444;
+  border-radius: 5px;
+  background-color: #1e1e1e;
+  color: #fff;
+  text-align: center;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="number"]:focus {
+  border-color: #00d4ff;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+  outline: none;
+}
+
+input[type="number"]:invalid {
+  border-color: #e74c3c;
+  background-color: #2a0000;
+}
+
+input[type="number"]:valid {
+  border-color: #00d4ff;
+}
+
+#generate-button {
+  padding: 10px 20px;
+  width: 200px;
+  margin: 20px auto;
+  background-color: #00d4ff;
+  color: #121212;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+#generate-button:hover {
+  background-color: #00a8cc;
+}
+
+#generate-button:active {
+  background-color: #0088aa;
+}
+
+/* Sección de matrices */
 #matrix-section {
   display: flex;
   flex-wrap: wrap;
@@ -34,114 +100,49 @@ footer {
   justify-content: center;
 }
 
-/* Contenedor de selección */
-.selection-container {
-  text-align: center;
-  margin: 20px 0;
-}
-
-/* Input de número */
-input[type="number"] {
-  width: 200px;
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-  transition: border-color 0.3s ease;
-  text-align: center;
-}
-
-/* Cuando el input está enfocado */
-input[type="number"]:focus {
-  border-color: #4caf50; /* Borde verde cuando está enfocado */
-  outline: none;
-  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5); /* Sombra verde */
-}
-
-/* Cuando el input es inválido (fuera del rango de 4-10) */
-input[type="number"]:invalid {
-  border-color: red; /* Borde rojo cuando el input es inválido */
-  background-color: #ffdddd; /* Fondo ligeramente rojo para mayor claridad */
-}
-
-/* Cuando el input es válido */
-input[type="number"]:valid {
-  border-color: #4caf50; /* Borde verde si el valor es válido */
-}
-
-#generate-button {
-  padding: 10px 20px;
-  width: 200px;
-  margin: 20px auto;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.generate-button:hover {
-  background-color: #3e8e41;
-}
-
-.generate-button:active {
-  background-color: #3eee41;
-}
-/* Estilo para las matrices */
+/* Contenedor de cada matriz */
 .matrix-container {
-  background-color: white;
-  border: 2px solid #ddd;
-  padding: 0px 20px 20px 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #1f1f1f;
+  border: 2px solid #2e2e2e;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
   border-radius: 10px;
+  padding: 5px;
+  display: none;
 }
 
 h2 {
   text-align: center;
+  color: #00d4ff;
+  margin-top: 20px;
+  text-wrap: pretty;
 }
 
-/* Estilo para la tabla de matrices */
+/* Estilo para las tablas */
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 10px;
   border: none;
-  border-width: 0;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  margin-top: 20px;
 }
-
 th,
 td {
-  box-sizing: border-box;
-  border: 1px solid #ddd;
+  border: 1px solid #333;
   padding: 0;
-}
-
-th,
-td {
   text-align: center;
-}
-
-th {
-  background-color: #f2f2f2;
-}
-
-/* Agregar colores a las celdas */
-td {
-  background-color: #f9f9f9;
+  background-color: #222;
+  color: #e0e0e0;
+  transition: background-color 0.2s ease;
 }
 
 td:hover {
-  background-color: #f0f0f0;
+  background-color: #2a2a2a;
 }
 
 td input {
   border: none;
   background-color: transparent;
   outline: none;
-  text-align: center;
   padding: 0;
+  text-align: center;
+  color: #fff;
 }

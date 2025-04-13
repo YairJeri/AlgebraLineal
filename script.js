@@ -25,7 +25,7 @@ function generateSymmetricMatrix(n) {
   for (let i = 0; i < n; i++) {
     let row = [];
     for (let j = 0; j <= i; j++) {
-      let num = Math.floor(Math.random() * 10);
+      let num = Math.floor(Math.random() * 20 - 10);
       row.push(num);
       if (i !== j) {
         matrix[j] = matrix[j] || [];
@@ -53,7 +53,6 @@ function createMatrix(matrix, elementId) {
 
         input.addEventListener("change", () => {
           const inputValue = parseFloat(input.value);
-          console.log("inputValue:", inputValue);
           if (isNaN(inputValue)) {
             input.value = cell;
           } else {
@@ -75,9 +74,9 @@ function updateMatrix(matrix, elementId) {
   const table = document.getElementById(elementId);
 
   const cols = matrix[0].length;
-  const tableWidth = table.offsetWidth;
+  const tableWidth = 360;
   const cellSize = Math.max((tableWidth - cols - 1) / cols, 33);
-
+  console.log(cellSize);
   const rows = table.getElementsByTagName("tr");
   //if (rows.length === 0) return;
   matrix.forEach((row, i) => {
@@ -96,9 +95,9 @@ function updateMatrix(matrix, elementId) {
 
       if (elementId === "matrix-gen") {
         const input = cells[j].getElementsByTagName("input")[0];
-        input.value = textContent;
-        input.style.width = `${cellSize - 1}px`;
-        input.style.height = `${cellSize - 1}px`;
+        input.value = Math.round(textContent);
+        input.style.width = `${cellSize}px`;
+        input.style.height = `${cellSize}px`;
         input.style.fontSize = newSize + "em";
       } else {
         cells[j].textContent = textContent;
@@ -111,7 +110,7 @@ function updateMatrix(matrix, elementId) {
   });
 }
 
-function descompLu(M) {
+function descomposicionLU(M) {
   let n = M.length;
   let l = Array.from({ length: n }, () => Array(n).fill(0)); // Matriz L
   let u = Array.from({ length: n }, () => Array(n).fill(0)); // Matriz U
@@ -156,11 +155,14 @@ function descomposicionPtLU(M) {
       if (_U[i][j] === 0) {
         if (i === j) {
           let new_i = i + 1;
-          let new_j = j + 1;
-          while (_U[i][new_j] === 0) {
+          while (_U[new_i][j] === 0 && new_i + 1 < n) {
             new_i++;
-            new_j++;
           }
+
+          if (new_i === n - 1 && _U[new_i][j] === 0) {
+            break;
+          }
+
           let tempP = _P[i];
           _P[i] = _P[new_i];
           _P[new_i] = tempP;
@@ -172,11 +174,12 @@ function descomposicionPtLU(M) {
           let tempU = _U[i];
           _U[i] = _U[new_i];
           _U[new_i] = tempU;
-          i--;
+
+          //i--;
         }
-        continue;
+        //continue;
       }
-      if (i === j) {
+      if (i === j || _U[i][j] === 0) {
         continue;
       }
       let factor = _U[i][j] / _U[j][j];
@@ -185,6 +188,7 @@ function descomposicionPtLU(M) {
         _U[i][k] -= factor * _U[j][k];
       }
     }
+    //colEmpty = false;
   }
   for (let i = 0; i < n; i++) {
     _L[i][i] = 1;
@@ -192,38 +196,14 @@ function descomposicionPtLU(M) {
   return { _L, _U, _P };
 }
 
-/*
-let B = [
-  [1, 2, -1],
-  [3, 6, 2],
-  [-1, 1, 4],
-];
-*/
-let B = [
-  [0, 3, 4, 1],
-  [1, 4, 7, 3],
-  [1, 4, 7, 4],
-  [0, 3, 5, 2],
-];
-
-console.log("aqui", descomposicionPtLU(B));
-const { _L, _U, _P } = descomposicionPtLU(B);
-
-if (!window.resizeListenerAdded) {
-  window.addEventListener("resize", function () {
-    updateMatrix(A, "matrix-gen");
-    updateMatrix(L, "matrixL");
-    updateMatrix(U, "matrixU");
-  });
-  window.resizeListenerAdded = true;
-}
-
-//displayMatrix(A, "matrix-gen");
-
 function calculateMatrix() {
   updateMatrix(A, "matrix-gen");
 
-  const { possible, l, u } = descompLu(A);
+  document.getElementById("matrix-gen").parentElement.style.display = "block";
+  document.getElementById("matrixL").parentElement.style.display = "block";
+  document.getElementById("matrixU").parentElement.style.display = "block";
+
+  const { possible, l, u } = descomposicionLU(A);
   if (possible) {
     L = l;
     U = u;
@@ -237,23 +217,16 @@ function calculateMatrix() {
     L = _L;
     U = _U;
     P = _P;
-    console.log("p", P);
     Pt = transpuesta(P);
     updateMatrix(L, "matrixL");
     updateMatrix(U, "matrixU");
     updateMatrix(P, "matrixP");
-    console.log(
-      "multiplicacion",
-      multiplicarMatrices(multiplicarMatrices(Pt, L), U)
-    );
   }
 }
 
 document.getElementById("generate-button").addEventListener("click", () => {
   const n = parseInt(document.getElementById("n").value);
-  console.log("n:", n);
   if (n < 4 || n > 10 || isNaN(n)) return;
-  console.log("El valor de n debe estar entre 3 y 11");
   A = generateSymmetricMatrix(n);
   L = Array.from({ length: n }, () => Array(n).fill(0));
   U = Array.from({ length: n }, () => Array(n).fill(0));
@@ -315,4 +288,33 @@ function transpuesta(matriz) {
   return matrizTranspuesta;
 }
 
-console.log(multiplicarMatrices(multiplicarMatrices(transpuesta(_P), _L), _U));
+let _A = [
+  [0, 4, -5, 2, 8],
+  [0, 0, 6, 1, 5],
+  [0, 6, 1, 6, -6],
+  [0, 1, 6, 3, -5],
+  [0, -5, -6, -5, 0],
+];
+let _l = [
+  [1, 0, 0, 0, 0],
+  [0, 1, 0, 0, 0],
+  [0, 0, 1, 0, 0],
+  [0, 0.17, 0.97, 1, 0],
+  [0, -0.83, -0.85, 0.84, 1],
+];
+let _u = [
+  [0, 4, -5, 2, 8],
+  [0, 6, 1, 6, -6],
+  [0, 0, 6, 1, -5],
+  [0, 0, 0, 1.03, 0.86],
+  [0, 0, 0, 0, -10.03],
+];
+let _p = [
+  [1, 0, 0, 0, 0],
+  [0, 0, 1, 0, 0],
+  [0, 1, 0, 0, 0],
+  [0, 0, 0, 1, 0],
+  [0, 0, 0, 0, 1],
+];
+
+console.log(multiplicarMatrices(multiplicarMatrices(_p, _l), _u));
