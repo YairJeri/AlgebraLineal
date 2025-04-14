@@ -1,23 +1,7 @@
-let A = [
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-];
-let L = [
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-];
-let U = [
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-];
-let P = [
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-];
+let A = [];
+let L = [];
+let U = [];
+let P = [];
 
 function generateSymmetricMatrix(n) {
   let matrix = [];
@@ -71,12 +55,17 @@ function createMatrix(matrix, elementId) {
 }
 
 function updateMatrix(matrix, elementId) {
+  if (matrix.length === 0) return;
+
   const table = document.getElementById(elementId);
 
   const cols = matrix[0].length;
   const tableWidth = 360;
-  const cellSize = Math.max((tableWidth - cols - 1) / cols, 33);
-  console.log(cellSize);
+  const windowWidth = window.innerWidth;
+  const cellSize = Math.max(
+    (tableWidth - cols - 1) / cols,
+    (windowWidth * 0.25 - cols - 1) / cols
+  );
   const rows = table.getElementsByTagName("tr");
   //if (rows.length === 0) return;
   matrix.forEach((row, i) => {
@@ -108,6 +97,16 @@ function updateMatrix(matrix, elementId) {
       }
     });
   });
+}
+
+if (!window.resizeListenerAdded) {
+  window.addEventListener("resize", function () {
+    updateMatrix(A, "matrix-gen");
+    updateMatrix(P, "matrixP");
+    updateMatrix(L, "matrixL");
+    updateMatrix(U, "matrixU");
+  });
+  window.resizeListenerAdded = true;
 }
 
 function descomposicionLU(M) {
@@ -205,6 +204,7 @@ function calculateMatrix() {
 
   const { possible, l, u } = descomposicionLU(A);
   if (possible) {
+    P = [];
     L = l;
     U = u;
     document.getElementById("matrixP").parentElement.style.display = "none";
