@@ -245,7 +245,7 @@ function calculateMatrix() {
 
 document.getElementById("generate-button").addEventListener("click", () => {
   const n = parseInt(document.getElementById("n").value);
-  if (n < 3 || n > 10 || isNaN(n)) return;
+  if (n < 4 || n > 10 || isNaN(n)) return;
   A = generateSymmetricMatrix(n);
   L = Array.from({ length: n }, () => Array(n).fill(0));
   U = Array.from({ length: n }, () => Array(n).fill(0));
