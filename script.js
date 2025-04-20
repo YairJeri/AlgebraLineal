@@ -1,3 +1,4 @@
+// Definir las matrices A, L, U y P
 let A = [];
 let L = [];
 let U = [];
@@ -5,7 +6,7 @@ let P = [];
 
 function generateSymmetricMatrix(n) {
   let matrix = [];
-
+  // Generar la matriz simétrica
   for (let i = 0; i < n; i++) {
     let row = [];
     for (let j = 0; j <= i; j++) {
@@ -18,7 +19,6 @@ function generateSymmetricMatrix(n) {
     }
     matrix.push(row);
   }
-
   return matrix;
 }
 
@@ -45,7 +45,9 @@ function createMatrix(matrix, elementId) {
             calculateMatrix();
           }
         });
-
+        input.addEventListener("focus", () => {
+          input.select();
+        });
         td.appendChild(input);
       }
       tr.appendChild(td);
@@ -113,18 +115,22 @@ function descomposicionLU(M) {
   let n = M.length;
   let l = Array.from({ length: n }, () => Array(n).fill(0)); // Matriz L
   let u = Array.from({ length: n }, () => Array(n).fill(0)); // Matriz U
-  let possible = true;
+  let possible = true; // Indica si es posible descomponer la matriz por LU
+
+  // i: fila actual, j: columna actual
   for (let i = 0; i < n && possible; i++) {
-    l[i][i] = 1;
+    l[i][i] = 1; // La diagonal de la matriz L se inicializa con 1
     for (let j = 0; j < n && possible; j++) {
       let auxsum = 0;
       if (i > j) {
+        // Debajo de la diagonal
         for (let k = 0; k < j && possible; k++) {
           auxsum += l[i][k] * u[k][j];
         }
         l[i][j] = (M[i][j] - auxsum) / u[j][j];
         possible = !isNaN(l[i][j]) && l[i][j] !== Infinity;
       } else {
+        // Encima de la diagonal + la diagonal
         auxsum = 0;
         for (let k = 0; k < i && possible; k++) {
           auxsum += l[i][k] * u[k][j];
@@ -143,52 +149,61 @@ function descomposicionPtLU(M) {
   let _L = Array.from({ length: n }, () => Array(n).fill(0));
   let _U = Array.from({ length: n }, () => Array(n).fill(0));
 
+  // Inicializa la matriz P con la matriz identidad
   for (let i = 0; i < n; i++) {
     _P[i][i] = 1;
     for (let j = 0; j < n; j++) {
-      _U[i][j] = M[i][j];
+      _U[i][j] = M[i][j]; // Inicializa la matriz U con la matriz original
     }
   }
+
+  // i: fila actual, j: columna actual
   for (let j = 0; j < n - 1; j++) {
     for (let i = j; i < n; i++) {
-      if (_U[i][j] === 0) {
-        if (i === j) {
-          let new_i = i + 1;
-          while (_U[new_i][j] === 0 && new_i + 1 < n) {
-            new_i++;
-          }
-
-          if (new_i === n - 1 && _U[new_i][j] === 0) {
-            break;
-          }
-
-          let tempP = _P[i];
-          _P[i] = _P[new_i];
-          _P[new_i] = tempP;
-
-          let tempL = _L[i];
-          _L[i] = _L[new_i];
-          _L[new_i] = tempL;
-
-          let tempU = _U[i];
-          _U[i] = _U[new_i];
-          _U[new_i] = tempU;
-
-          //i--;
+      // Si el elemento es nulo y es la diagonal
+      // Intentar intercambiar con el siguiente elemento no nulo en la columna
+      if (_U[i][j] === 0 && i === j) {
+        let new_i = i + 1;
+        while (_U[new_i][j] === 0 && new_i + 1 < n) {
+          new_i++; // Buscar el siguiente elemento no nulo en la columna
         }
-        //continue;
+
+        if (new_i === n - 1 && _U[new_i][j] === 0) {
+          break; // Si no hay elementos no nulos en la columna, terminar el bucle
+        }
+
+        // En caso de que exista un elemento no nulo en la fila, intercambiar
+        // la fila actual con la fila con elemento no nulo
+        let tempP = _P[i];
+        _P[i] = _P[new_i];
+        _P[new_i] = tempP;
+
+        let tempL = _L[i];
+        _L[i] = _L[new_i];
+        _L[new_i] = tempL;
+
+        let tempU = _U[i];
+        _U[i] = _U[new_i];
+        _U[new_i] = tempU;
       }
+      // Si estamos en la diagonal o el elemento actual es 0
+      // No hacer nada y continuar al siguiente elemento en la columna
       if (i === j || _U[i][j] === 0) {
         continue;
       }
+
+      // Calcular el factor de la fila i
       let factor = _U[i][j] / _U[j][j];
       _L[i][j] = factor;
+
+      // Restar la fila i con el factor multiplicado por la fila j
       for (let k = j; k < n; k++) {
         _U[i][k] -= factor * _U[j][k];
       }
     }
-    //colEmpty = false;
   }
+
+  // Despues de terminar los intercambios, completar la diagonal de la matriz L
   for (let i = 0; i < n; i++) {
     _L[i][i] = 1;
   }
@@ -196,14 +211,15 @@ function descomposicionPtLU(M) {
 }
 
 function calculateMatrix() {
-  updateMatrix(A, "matrix-gen");
+  updateMatrix(A, "matrix-gen"); // Actualizar el HTML con la matriz original
 
   document.getElementById("matrix-gen").parentElement.style.display = "block";
   document.getElementById("matrixL").parentElement.style.display = "block";
   document.getElementById("matrixU").parentElement.style.display = "block";
 
-  const { possible, l, u } = descomposicionLU(A);
+  const { possible, l, u } = descomposicionLU(A); // Calcular descomposición LU
   if (possible) {
+    // Si es posible descomponer la matriz por LU
     P = [];
     L = l;
     U = u;
@@ -211,6 +227,7 @@ function calculateMatrix() {
     updateMatrix(L, "matrixL");
     updateMatrix(U, "matrixU");
   } else {
+    // Si no es posible, descomponer la matriz por PA=LU
     document.getElementById("matrixP").parentElement.style.display = "block";
 
     const { _L, _U, _P } = descomposicionPtLU(A);
@@ -218,15 +235,17 @@ function calculateMatrix() {
     U = _U;
     P = _P;
     Pt = transpuesta(P);
-    updateMatrix(L, "matrixL");
-    updateMatrix(U, "matrixU");
-    updateMatrix(P, "matrixP");
+    updateMatrix(L, "matrixL"); // Actualizar el HTML con la matriz L
+    updateMatrix(U, "matrixU"); // Actualizar el HTML con la matriz U
+    updateMatrix(P, "matrixP"); // Actualizar el HTML con la matriz P
+
+    console.log(multiplicarMatrices(multiplicarMatrices(Pt, L), U));
   }
 }
 
 document.getElementById("generate-button").addEventListener("click", () => {
   const n = parseInt(document.getElementById("n").value);
-  if (n < 4 || n > 10 || isNaN(n)) return;
+  if (n < 3 || n > 10 || isNaN(n)) return;
   A = generateSymmetricMatrix(n);
   L = Array.from({ length: n }, () => Array(n).fill(0));
   U = Array.from({ length: n }, () => Array(n).fill(0));
@@ -287,34 +306,3 @@ function transpuesta(matriz) {
 
   return matrizTranspuesta;
 }
-
-let _A = [
-  [0, 4, -5, 2, 8],
-  [0, 0, 6, 1, 5],
-  [0, 6, 1, 6, -6],
-  [0, 1, 6, 3, -5],
-  [0, -5, -6, -5, 0],
-];
-let _l = [
-  [1, 0, 0, 0, 0],
-  [0, 1, 0, 0, 0],
-  [0, 0, 1, 0, 0],
-  [0, 0.17, 0.97, 1, 0],
-  [0, -0.83, -0.85, 0.84, 1],
-];
-let _u = [
-  [0, 4, -5, 2, 8],
-  [0, 6, 1, 6, -6],
-  [0, 0, 6, 1, -5],
-  [0, 0, 0, 1.03, 0.86],
-  [0, 0, 0, 0, -10.03],
-];
-let _p = [
-  [1, 0, 0, 0, 0],
-  [0, 0, 1, 0, 0],
-  [0, 1, 0, 0, 0],
-  [0, 0, 0, 1, 0],
-  [0, 0, 0, 0, 1],
-];
-
-console.log(multiplicarMatrices(multiplicarMatrices(_p, _l), _u));
