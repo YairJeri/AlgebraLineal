@@ -4,6 +4,10 @@ let L = [];
 let U = [];
 let P = [];
 
+let L_ant = [];
+let U_ant = [];
+let P_ant = [];
+
 function generateSymmetricMatrix(n) {
   let matrix = [];
   // Generar la matriz simétrica
@@ -56,7 +60,7 @@ function createMatrix(matrix, elementId) {
   });
 }
 
-function updateMatrix(matrix, elementId) {
+function updateMatrix(matrix, matrix_ant, elementId) {
   if (matrix.length === 0) return;
 
   const table = document.getElementById(elementId);
@@ -69,7 +73,6 @@ function updateMatrix(matrix, elementId) {
     (windowWidth * 0.25 - cols - 1) / cols
   );
   const rows = table.getElementsByTagName("tr");
-  //if (rows.length === 0) return;
   matrix.forEach((row, i) => {
     const cells = rows[i].getElementsByTagName("td");
     row.forEach((cell, j) => {
@@ -83,7 +86,10 @@ function updateMatrix(matrix, elementId) {
         textContent = num.toFixed(2);
       }
       let newSize = Math.max(0.2, 1.2 - textContent.length * 0.1);
-
+      if (matrix_ant[i][j] !== cell) {
+        cells[j].classList.add("cell-updated");
+        setTimeout(() => cells[j].classList.remove("cell-updated"), 1500);
+      }
       if (elementId === "matrix-gen") {
         const input = cells[j].getElementsByTagName("input")[0];
         input.value = Math.round(textContent);
@@ -103,10 +109,10 @@ function updateMatrix(matrix, elementId) {
 
 if (!window.resizeListenerAdded) {
   window.addEventListener("resize", function () {
-    updateMatrix(A, "matrix-gen");
-    updateMatrix(P, "matrixP");
-    updateMatrix(L, "matrixL");
-    updateMatrix(U, "matrixU");
+    updateMatrix(A, A, "matrix-gen");
+    updateMatrix(P, P_ant, "matrixP");
+    updateMatrix(L, L_ant, "matrixL");
+    updateMatrix(U, U_ant, "matrixU");
   });
   window.resizeListenerAdded = true;
 }
@@ -211,7 +217,10 @@ function descomposicionPtLU(M) {
 }
 
 function calculateMatrix() {
-  updateMatrix(A, "matrix-gen"); // Actualizar el HTML con la matriz original
+  updateMatrix(A, A, "matrix-gen"); // Actualizar el HTML con la matriz original
+
+  let formula = document.getElementById("matrixFormula");
+  formula.style.display = "block";
 
   document.getElementById("matrix-gen").parentElement.style.display = "block";
   document.getElementById("matrixL").parentElement.style.display = "block";
@@ -220,27 +229,33 @@ function calculateMatrix() {
   const { possible, l, u } = descomposicionLU(A); // Calcular descomposición LU
   if (possible) {
     // Si es posible descomponer la matriz por LU
+    formula.innerHTML = "A = LU";
     P = [];
     L = l;
     U = u;
     document.getElementById("matrixP").parentElement.style.display = "none";
-    updateMatrix(L, "matrixL");
-    updateMatrix(U, "matrixU");
+    updateMatrix(L, L_ant, "matrixL");
+    updateMatrix(U, U_ant, "matrixU");
   } else {
     // Si no es posible, descomponer la matriz por PA=LU
     document.getElementById("matrixP").parentElement.style.display = "block";
 
+    formula.innerHTML = "PA = LU";
     const { _L, _U, _P } = descomposicionPtLU(A);
     L = _L;
     U = _U;
     P = _P;
     Pt = transpuesta(P);
-    updateMatrix(L, "matrixL"); // Actualizar el HTML con la matriz L
-    updateMatrix(U, "matrixU"); // Actualizar el HTML con la matriz U
-    updateMatrix(P, "matrixP"); // Actualizar el HTML con la matriz P
+    updateMatrix(L, L_ant, "matrixL"); // Actualizar el HTML con la matriz L
+    updateMatrix(U, U_ant, "matrixU"); // Actualizar el HTML con la matriz U
+    updateMatrix(P, P_ant, "matrixP"); // Actualizar el HTML con la matriz P
+
+    P_ant = P.map((row) => [...row]);
 
     console.log(multiplicarMatrices(multiplicarMatrices(Pt, L), U));
   }
+  L_ant = L.map((row) => [...row]);
+  U_ant = U.map((row) => [...row]);
 }
 
 document.getElementById("generate-button").addEventListener("click", () => {
@@ -250,6 +265,10 @@ document.getElementById("generate-button").addEventListener("click", () => {
   L = Array.from({ length: n }, () => Array(n).fill(0));
   U = Array.from({ length: n }, () => Array(n).fill(0));
   P = Array.from({ length: n }, () => Array(n).fill(0));
+
+  L_ant = Array.from({ length: n }, () => Array(n).fill(0));
+  U_ant = Array.from({ length: n }, () => Array(n).fill(0));
+  P_ant = Array.from({ length: n }, () => Array(n).fill(0));
 
   createMatrix(A, "matrix-gen");
   createMatrix(L, "matrixL");
