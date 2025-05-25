@@ -41,8 +41,10 @@ function isSymmetricPositiveDefinite(A) {
 
       if (i === j) {
         const diag = A[i][i] - sum;
+        console.log(diag);
         if (diag <= 0) return { cholesky: false };
         L_cholesky[i][j] = Math.sqrt(diag);
+        console.log(L_cholesky[i][j]);
       } else {
         if (L_cholesky[j][j] === 0) return { cholesky: false };
         L_cholesky[i][j] = (A[i][j] - sum) / L_cholesky[j][j];
@@ -263,6 +265,7 @@ function calculateMatrix() {
     L = l_cholesky;
     document.getElementById("matrixP").parentElement.style.display = "none";
     document.getElementById("matrixU").parentElement.style.display = "none";
+    updateMatrix(L, L_ant, "matrixL");
   } else {
     document.getElementById("matrixU").parentElement.style.display = "block";
     const { possible, l, u } = descomposicionLU(A); // Calcular descomposición LU
