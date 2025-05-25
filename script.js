@@ -26,6 +26,33 @@ function generateSymmetricMatrix(n) {
   return matrix;
 }
 
+function isSymmetricPositiveDefinite(A) {
+  const n = A.length;
+  const L_cholesky = Array.from({ length: n }, () => Array(n).fill(0));
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j <= i; j++) {
+      if (A[i][j] !== A[j][i]) return { cholesky: false };
+
+      let sum = 0;
+      for (let k = 0; k < j; k++) {
+        sum += L_cholesky[i][k] * L_cholesky[j][k];
+      }
+
+      if (i === j) {
+        const diag = A[i][i] - sum;
+        if (diag <= 0) return { cholesky: false };
+        L_cholesky[i][j] = Math.sqrt(diag);
+      } else {
+        if (L_cholesky[j][j] === 0) return { cholesky: false };
+        L_cholesky[i][j] = (A[i][j] - sum) / L_cholesky[j][j];
+      }
+    }
+  }
+
+  return { cholesky: true, l_cholesky: L_cholesky };
+}
+
 function createMatrix(matrix, elementId) {
   const table = document.getElementById(elementId);
   table.innerHTML = "";
@@ -66,11 +93,12 @@ function updateMatrix(matrix, matrix_ant, elementId) {
   const table = document.getElementById(elementId);
 
   const cols = matrix[0].length;
-  const tableWidth = 360;
+  const tableWidth = 360 - (10 - cols) * 10;
+
   const windowWidth = window.innerWidth;
   const cellSize = Math.max(
     (tableWidth - cols - 1) / cols,
-    (windowWidth * 0.25 - cols - 1) / cols
+    (windowWidth * 0.2 - cols - 1 - (10 - cols) * 20) / cols
   );
   const rows = table.getElementsByTagName("tr");
   matrix.forEach((row, i) => {
@@ -87,9 +115,12 @@ function updateMatrix(matrix, matrix_ant, elementId) {
       }
       let newSize = Math.max(0.2, 1.2 - textContent.length * 0.1);
       if (matrix_ant[i][j] !== cell) {
-        cells[j].classList.add("cell-updated");
-        setTimeout(() => cells[j].classList.remove("cell-updated"), 1500);
+        const cellEl = cells[j];
+        cellEl.classList.remove("cell-updated");
+        void cellEl.offsetWidth;
+        cellEl.classList.add("cell-updated");
       }
+
       if (elementId === "matrix-gen") {
         const input = cells[j].getElementsByTagName("input")[0];
         input.value = Math.round(textContent);
@@ -224,35 +255,44 @@ function calculateMatrix() {
 
   document.getElementById("matrix-gen").parentElement.style.display = "block";
   document.getElementById("matrixL").parentElement.style.display = "block";
-  document.getElementById("matrixU").parentElement.style.display = "block";
 
-  const { possible, l, u } = descomposicionLU(A); // Calcular descomposición LU
-  if (possible) {
-    // Si es posible descomponer la matriz por LU
-    formula.innerHTML = "A = LU";
+  const { cholesky, l_cholesky } = isSymmetricPositiveDefinite(A); // Calcular descomposición LU
+  if (cholesky) {
+    formula.innerHTML = "A = LLᵀ";
     P = [];
-    L = l;
-    U = u;
+    L = l_cholesky;
     document.getElementById("matrixP").parentElement.style.display = "none";
-    updateMatrix(L, L_ant, "matrixL");
-    updateMatrix(U, U_ant, "matrixU");
+    document.getElementById("matrixU").parentElement.style.display = "none";
   } else {
-    // Si no es posible, descomponer la matriz por PA=LU
-    document.getElementById("matrixP").parentElement.style.display = "block";
+    document.getElementById("matrixU").parentElement.style.display = "block";
+    const { possible, l, u } = descomposicionLU(A); // Calcular descomposición LU
+    if (possible) {
+      // Si es posible descomponer la matriz por LU
+      formula.innerHTML = "A = LU";
+      P = [];
+      L = l;
+      U = u;
+      document.getElementById("matrixP").parentElement.style.display = "none";
+      updateMatrix(L, L_ant, "matrixL");
+      updateMatrix(U, U_ant, "matrixU");
+    } else {
+      // Si no es posible, descomponer la matriz por PA=LU
+      document.getElementById("matrixP").parentElement.style.display = "block";
 
-    formula.innerHTML = "PA = LU";
-    const { _L, _U, _P } = descomposicionPtLU(A);
-    L = _L;
-    U = _U;
-    P = _P;
-    Pt = transpuesta(P);
-    updateMatrix(L, L_ant, "matrixL"); // Actualizar el HTML con la matriz L
-    updateMatrix(U, U_ant, "matrixU"); // Actualizar el HTML con la matriz U
-    updateMatrix(P, P_ant, "matrixP"); // Actualizar el HTML con la matriz P
+      formula.innerHTML = "PA = LU";
+      const { _L, _U, _P } = descomposicionPtLU(A);
+      L = _L;
+      U = _U;
+      P = _P;
+      Pt = transpuesta(P);
+      updateMatrix(L, L_ant, "matrixL"); // Actualizar el HTML con la matriz L
+      updateMatrix(U, U_ant, "matrixU"); // Actualizar el HTML con la matriz U
+      updateMatrix(P, P_ant, "matrixP"); // Actualizar el HTML con la matriz P
 
-    P_ant = P.map((row) => [...row]);
+      P_ant = P.map((row) => [...row]);
 
-    console.log(multiplicarMatrices(multiplicarMatrices(Pt, L), U));
+      //console.log(multiplicarMatrices(multiplicarMatrices(Pt, L), U));
+    }
   }
   L_ant = L.map((row) => [...row]);
   U_ant = U.map((row) => [...row]);

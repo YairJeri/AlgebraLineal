@@ -1,38 +1,34 @@
-/* Estilo general - Dark Theme */
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "gg sans", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #121212;
-  color: #e0e0e0;
+  background-color: #2b2d31;
+  color: #f2f3f5;
 }
 
-/* Header con diseño moderno */
 header {
-  background: linear-gradient(135deg, #1f1f1f, #2b2b2b);
+  background-color: #1e1f22;
   color: #00d4ff;
-  padding: 20px 20px;
+  padding: 20px;
   text-align: center;
-  border-bottom: 2px solid #00d4ff;
-  box-shadow: 0 2px 10px rgba(0, 212, 255, 0.2);
+  border-bottom: 1px solid #313338;
 }
 
 header h1 {
   margin: 0;
   font-size: 2rem;
-  letter-spacing: 1px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   text-wrap: pretty;
 }
 
-/* Footer */
 footer {
   text-align: center;
   padding: 10px;
-  background-color: #1f1f1f;
-  color: #aaa;
+  background-color: #1e1f22;
+  color: #b5bac1;
 }
 
-/* Sección de selección */
 .selection-container {
   text-align: center;
   margin: 20px 0;
@@ -42,23 +38,22 @@ input[type="number"] {
   width: 200px;
   padding: 10px;
   font-size: 16px;
-  border: 2px solid #444;
-  border-radius: 5px;
-  background-color: #1e1e1e;
-  color: #fff;
+  border: 1px solid #4e5058;
+  border-radius: 6px;
+  background-color: #1e1f22;
+  color: #f2f3f5;
   text-align: center;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease;
 }
 
 input[type="number"]:focus {
   border-color: #00d4ff;
-  box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
   outline: none;
 }
 
 input[type="number"]:invalid {
-  border-color: #e74c3c;
-  background-color: #2a0000;
+  border-color: #f04747;
+  background-color: #2e1b1b;
 }
 
 input[type="number"]:valid {
@@ -70,7 +65,7 @@ input[type="number"]:valid {
   width: 200px;
   margin: 20px auto;
   background-color: #00d4ff;
-  color: #121212;
+  color: #1e1f22;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -97,8 +92,7 @@ input[type="number"]:valid {
   display: none;
 }
 
-/* Sección de matrices */
-#matrix-section {
+.matrix-section {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -106,19 +100,9 @@ input[type="number"]:valid {
   gap: 20px;
 }
 
-#matrix-generated {
-  display: flex;
-  justify-content: center;
-  justify-content: space-around;
-  padding-top: 20px;
-  gap: 20px;
-}
-
-/* Contenedor de cada matriz */
 .matrix-container {
-  background-color: #1f1f1f;
-  border: 2px solid #2e2e2e;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+  background-color: #1e1f22;
+  border: 1px solid #313338;
   border-radius: 10px;
   padding: 5px;
   display: none;
@@ -131,25 +115,25 @@ h2 {
   text-wrap: pretty;
 }
 
-/* Estilo para las tablas */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
   border: none;
 }
+
 th,
 td {
-  border: 1px solid #333;
+  border: 1px solid #3c3f45;
   padding: 0;
   text-align: center;
-  background-color: #222;
-  color: #e0e0e0;
+  background-color: #2b2d31;
+  color: #f2f3f5;
   transition: background-color 0.2s ease;
 }
 
 td:hover {
-  background-color: #2a2a2a;
+  background-color: #3a3d42;
 }
 
 td input {
@@ -158,7 +142,7 @@ td input {
   outline: none;
   padding: 0;
   text-align: center;
-  color: #fff;
+  color: #f2f3f5;
 }
 
 @keyframes cell-change {
@@ -166,10 +150,40 @@ td input {
     background-color: #00d4ff;
   }
   100% {
-    background-color: transparent;
+    background-color: #2b2d31;
   }
 }
 
 .cell-updated {
-  animation: cell-change 1.5s ease-in-out;
+  animation: cell-change 3.5s ease-in-out;
+}
+
+#matrix-gen td {
+  background-color: #121212;
+  cursor: text;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+#matrix-gen td:hover {
+  background-color: #00d4ff20;
+}
+
+#matrix-gen td input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #00d4ff;
+  color: #00d4ff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+#matrix-gen td input:focus {
+  border-color: #00a8cc;
+  box-shadow: 0 0 6px #00a8cc;
+  background-color: #001f33;
+  color: #00d4ff;
 }
