@@ -36,7 +36,7 @@ Está desarrollada con **HTML, CSS y JavaScript** y permite trabajar con matrice
 
 ---
 
-## Diagrama de flujo del método de selección
+## Diagrama de flujo del programa
 
 <p align="center">
   <img src="./diagrama-flujo.png" alt="Diagrama de flujo" width="auto"/>
